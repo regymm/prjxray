@@ -45,6 +45,11 @@ endif
 # Zynq7 only fuzzers
 ifeq (${XRAY_DATABASE}, zynq7)
 TILEGRID_TDB_DEPENDENCIES += ps7_int/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+ifeq (${XRAY_FABRIC}, $(filter ${XRAY_FABRIC}, xc7z030))
+TILEGRID_TDB_DEPENDENCIES += iob18/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+TILEGRID_TDB_DEPENDENCIES += iob18_int/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+TILEGRID_TDB_DEPENDENCIES += ioi18/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+endif
 endif
 
 # Kintex7 only fuzzers

@@ -46,7 +46,9 @@ for i in range(CLBN):
     ffprim = random.choice(ones(ffprims))
     # clb_FD clb_FD (.clk(clk), .din(din[  0 +: 4]), .dout(dout[  0]));
     # clb_FD_1 clb_FD_1 (.clk(clk), .din(din[  4 +: 4]), .dout(dout[  1]));
+    # print('#')
     loc = next(slices)
+    # print('#', loc)
     # Latch can't go in 5s
     if isff(ffprim):
         bel = random.choice(ff_bels)
