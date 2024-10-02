@@ -87,7 +87,11 @@ endef
 ifeq ($(XRAY_DATABASE),kintex7)
 HAS_HIGH_PERFORMANCE_BANKS=1
 else
+ifeq (${XRAY_FABRIC}, $(filter ${XRAY_FABRIC}, xc7z030))
+HAS_HIGH_PERFORMANCE_BANKS=1
+else
 HAS_HIGH_PERFORMANCE_BANKS=0
+endif
 endif
 $(eval $(call fuzzer,000-init-db,,part))
 
@@ -194,7 +198,7 @@ endif
 endif
 endif
 $(eval $(call fuzzer,100-dsp-mskpat,005-tilegrid,all))
-$(eval $(call fuzzer,101-dsp-pips,005-tilegrid,all))
+#$(eval $(call fuzzer,101-dsp-pips,005-tilegrid,all))
 
 quick:
 	$(MAKE) QUICK=Y
