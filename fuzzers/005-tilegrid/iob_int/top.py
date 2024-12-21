@@ -30,7 +30,18 @@ def gen_sites():
     '''
     db = Database(util.get_db_root(), util.get_part())
     grid = db.grid()
+
+    is_7045 = "xc7z045" in os.environ["XRAY_PART"]
+    unbonded_iois = []
+    for i in range(1, 49, 2):
+        unbonded_iois.append("LIOI3_X0Y" + str(i))
+        unbonded_iois.append("LIOI3_TBYTESRC_X0Y" + str(i))
+        unbonded_iois.append("LIOI3_TBYTETERM_X0Y" + str(i))
+    unbonded_iois.append("LIOI3_SING_X0Y0")
+    unbonded_iois.append("LIOI3_SING_X0Y49")
     for tile_name in sorted(grid.tiles()):
+        if is_7045 and tile_name in unbonded_iois:
+            continue
         loc = grid.loc_of_tilename(tile_name)
         gridinfo = grid.gridinfo_at_loc(loc)
 
