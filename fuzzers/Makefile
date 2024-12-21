@@ -100,7 +100,7 @@ HAS_HIGH_PERFORMANCE_BANKS=1
 # DSP fuzzer gives error on 7030, need to make sure 7020/7010 runs before 7030, and use their results
 SKIP_DSP=1 
 # PCIE hard block: can only use after GTX support comes
-HAS_PCIE=1
+HAS_PCIE=0
 endif
 endif
 endif

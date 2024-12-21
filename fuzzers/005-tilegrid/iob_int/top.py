@@ -33,7 +33,7 @@ def gen_sites():
 
     is_7045 = "xc7z045" in os.environ["XRAY_PART"]
     unbonded_iois = []
-    for i in range(1, 49, 2):
+    for i in [1, 3, 5, 7, 9, 13, 15, 17, 19, 29, 31, 33, 35, 39, 41, 43, 45, 47]:
         unbonded_iois.append("LIOI3_X0Y" + str(i))
         unbonded_iois.append("LIOI3_TBYTESRC_X0Y" + str(i))
         unbonded_iois.append("LIOI3_TBYTETERM_X0Y" + str(i))

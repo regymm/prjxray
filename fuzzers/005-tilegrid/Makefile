@@ -49,8 +49,11 @@ ifeq (${XRAY_FABRIC}, $(filter ${XRAY_FABRIC}, xc7z030 xc7z045 xc7z100))
 TILEGRID_TDB_DEPENDENCIES += iob18/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += iob18_int/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += ioi18/$(BUILD_FOLDER)/segbits_tilegrid.tdb
-TILEGRID_TDB_DEPENDENCIES += pcie/$(BUILD_FOLDER)/segbits_tilegrid.tdb
-TILEGRID_TDB_DEPENDENCIES += pcie_int_interface/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+#TILEGRID_TDB_DEPENDENCIES += pcie/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+#TILEGRID_TDB_DEPENDENCIES += pcie_int_interface/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+# TODO: This has issue with 7030: tdb uncertainty?
+#PCIE_INT_INTERFACE_L_X66Y0.DWORD:0.AUTO_FRAME 0044211A_000_00
+#PCIE_INT_INTERFACE_R_X63Y0.DWORD:0.AUTO_FRAME <6 candidates>
 endif
 endif
 
