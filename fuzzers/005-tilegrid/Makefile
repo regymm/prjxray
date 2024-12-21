@@ -198,7 +198,7 @@ run:
 
 clean:
 	rm -rf build_* run.*.ok
-	find . | grep run-005.*.ok | xargs rm
+	find . | grep run-005.*.ok | xargs rm -rf
 	cd clb && rm run.${XRAY_PART}.ok && $(MAKE) clean
 	cd clb_int && $(MAKE) clean
 	cd cfg && $(MAKE) clean
@@ -232,7 +232,7 @@ clean:
 	cd gtp_int_interface && $(MAKE) clean
 
 clean_part:
-	find . | grep ${OKFLAG} | xargs rm
+	find . | grep ${OKFLAG} | xargs rm -rf
 	rm -rf $(BUILD_FOLDER) run.${XRAY_PART}.ok
 	cd clb && $(MAKE) clean_part
 	cd clb_int && $(MAKE) clean_part
