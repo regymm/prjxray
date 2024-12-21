@@ -382,10 +382,6 @@ def propagate_IOB_SING(database, tiles_by_grid):
         bottom_tile = tile
         seen_iobs.add(bottom_tile)
 
-        print(prev_tile)
-        print('---')
-        print(tile)
-        print(database[prev_tile]['bits'])
         bits = database[prev_tile]['bits']['CLB_IO_CLK']
 
         while True:

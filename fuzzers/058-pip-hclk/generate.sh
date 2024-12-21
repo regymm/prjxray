@@ -9,7 +9,6 @@
 
 source ${XRAY_GENHEADER}
 
-#${XRAY_VIVADO} -mode tcl -source $FUZDIR/generate.tcl
 ${XRAY_VIVADO} -mode batch -source $FUZDIR/generate.tcl
 
 for x in design_*.bit; do
