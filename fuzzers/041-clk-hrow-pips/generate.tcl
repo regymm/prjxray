@@ -10,7 +10,7 @@ source "$::env(XRAY_DIR)/utils/utils.tcl"
 proc write_pip_txtdata {filename} {
     puts "FUZ([pwd]): Writing $filename."
     set fp [open $filename w]
-    set nets [get_nets -hierarchical]
+    set nets [get_nets -hierarchical -filter {NAME !~ "xlnx_opt_*"}]
     set nnets [llength $nets]
     set neti 0
     foreach net $nets {
@@ -50,7 +50,7 @@ proc route_todo {} {
     puts "Checking TODO's"
     set todo_map [load_todo]
 
-    set nets [get_nets]
+    set nets [get_nets -filter {NAME !~ "xlnx_opt_*"}]
 
     set todo_nets [dict create]
     set used_destinations [dict create]

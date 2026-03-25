@@ -10,7 +10,7 @@ source "$::env(XRAY_DIR)/utils/utils.tcl"
 proc write_pip_txtdata {filename} {
     puts "FUZ([pwd]): Writing $filename."
     set fp [open $filename w]
-    set nets [get_nets -hierarchical]
+    set nets [get_nets -hierarchical -filter {NAME !~ "xlnx_opt_*"}]
     set nnets [llength $nets]
     set neti 0
     foreach net $nets {
@@ -34,7 +34,7 @@ proc write_used_wires {filename} {
     puts "FUZ([pwd]): Writing $filename."
 
     set fp [open $filename w]
-    set nets [get_nets -hierarchical]
+    set nets [get_nets -hierarchical -filter {NAME !~ "xlnx_opt_*"}]
     set nnets [llength $nets]
     set neti 0
     foreach net $nets {
@@ -170,8 +170,10 @@ proc run {} {
         puts "MANROUTE: Ripping up and starting again with no fixed routes"
 
         route_design -unroute
-        set_property FIXED_ROUTE "" $nets
-        set_property IS_ROUTE_FIXED 0 $nets
+        if {[llength $nets] > 0} {
+            set_property FIXED_ROUTE "" $nets
+            set_property IS_ROUTE_FIXED 0 $nets
+        }
 
         route_design -directive Quick
     }

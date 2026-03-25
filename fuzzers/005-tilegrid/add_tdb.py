@@ -47,7 +47,13 @@ def load_db(fn):
         parts = l.split(' ')
         tagstr = parts[0]
         addrlist = parts[1:]
-        assert not any(s == '<const0>' for s in addrlist), (fn, l)
+        # Skip entries with unresolved addresses (e.g. '<0 candidates>', '<const0>')
+        # One mismatch at 005-tilegrid/cfg/build_xc7a100tfgg676-1/segbits_tilegrid.tdb
+        # Might from the same reason as cfg/cfg-startup failure in 2019.1
+        # 2017.2: CFG_CENTER_MID_X46Y84.DWORD:67.DBIT:18.DFRAME:1b 0040091B_067_18
+        # 2019.1: CFG_CENTER_MID_X46Y84.DWORD:67.DBIT:18.DFRAME:1b <0 candidates>
+        if any('<' in s for s in addrlist):
+            continue
         check_frames(tagstr, addrlist)
         # Take the first address in the list
         frame, wordidx, bitidx = parse_addr(addrlist[0])

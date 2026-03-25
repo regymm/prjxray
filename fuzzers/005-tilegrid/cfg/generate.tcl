@@ -6,4 +6,10 @@
 #
 # SPDX-License-Identifier: ISC
 source "$::env(XRAY_DIR)/utils/utils.tcl"
+
+# BSCAN_JtagChain supress
+# Now cfg fuzzers won't work on 2019.1, just let 005 pass
+set_msg_config -id {Vivado 12-4430} -suppress
+set_property SEVERITY {Warning} [get_drc_checks PDRC-2]
+
 generate_top

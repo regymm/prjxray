@@ -8,7 +8,7 @@
 source "$::env(XRAY_DIR)/utils/utils.tcl"
 
 proc route_delay {} {
-    set nets [get_nets]
+    set nets [get_nets -filter {NAME !~ "xlnx_opt_*"}]
 
     foreach net $nets {
         set wire [get_wires -of_objects $net -filter { TILE_NAME =~ "*GTP_INT_INTERFACE*" && NAME =~ "*IMUX_OUT*" }]

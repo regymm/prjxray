@@ -10,7 +10,7 @@ source "$::env(XRAY_DIR)/utils/utils.tcl"
 proc write_pip_txtdata {filename} {
     puts "FUZ([pwd]): Writing $filename."
     set fp [open $filename w]
-    set nets [get_nets -hierarchical]
+    set nets [get_nets -hierarchical -filter {NAME !~ "xlnx_opt_*"}]
     set nnets [llength $nets]
     set neti 0
     foreach net $nets {

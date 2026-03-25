@@ -132,7 +132,9 @@ proc putl {lst} {
 proc write_pip_txtdata {filename} {
     puts "FUZ([pwd]): Writing $filename."
     set fp [open $filename w]
-    set nets [get_nets -hierarchical]
+    # Vivado 2019.1 xlnx_opt_* nets not present in 2017.2,
+    # which causes huge disk and memory usage. Required in many pip fuzzers
+    set nets [get_nets -hierarchical -filter {NAME !~ "xlnx_opt_*"}]
     set nnets [llength $nets]
     set neti 0
     foreach net $nets {

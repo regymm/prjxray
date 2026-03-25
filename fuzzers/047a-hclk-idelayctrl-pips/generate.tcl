@@ -42,7 +42,7 @@ proc shuffle_list {list} {
 proc get_nets_with_todo_pip_wires {direction net_regexp wire_regexp used_destinations {verbose false}} {
     set todo_map [load_todo $direction]
     puts $todo_map
-    set nets [get_nets]
+    set nets [get_nets -filter {NAME !~ "xlnx_opt_*"}]
     set todo_nets [dict create]
 
     foreach net $nets {
