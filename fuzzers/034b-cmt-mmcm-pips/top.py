@@ -200,12 +200,13 @@ def main():
 
     print(
         '''
-module top(
-  input wire [{nclkin}:0] clkin
-);
+module top();
 
     (* KEEP, DONT_TOUCH *)
     LUT6 dummy();
+
+    // same as 034
+    (* keep = "true" *) wire [{nclkin}:0] clkin_buf = b0;
     '''.format(nclkin=max_clk_inputs - 1))
 
     pip_list = PipList()
@@ -420,7 +421,7 @@ module top(
                 (* KEEP, DONT_TOUCH *)
                 LUT6 # (.INIT(64'h5555555555555555))
                 clkin{idx}_logic_{site} (
-                    .I0(clkin{idx2}),
+                    .I0(clkin_buf[{idx2}]),
                     .O(clkin{idx}_{site})
                 );
                 """.format(idx=clkin + 1, idx2=clkin_idx, site=site))

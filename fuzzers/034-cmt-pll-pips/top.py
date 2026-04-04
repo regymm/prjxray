@@ -163,11 +163,19 @@ def main():
     print(
         '''
 module top(
-  input wire [{nclkin}:0] clkin
+  //input wire [{nclkin}:0] clkin
 );
 
     (* KEEP, DONT_TOUCH *)
     LUT6 dummy();
+    // Claude Code Analysis: 
+    // Vivado 2019.1 opt_design trims primary input connections to KEEP/DONT_TOUCH
+    // LUT cells when the source is a primary input port.  Using a constant-driven
+    // internal wire with keep="true" avoids both the trimming (Opt 31-67) and the
+    // port IO-constraint DRC errors (NSTD-1, UCIO-1).  The LUT's DONT_TOUCH
+    // prevents its constant output from being replaced with a GND tie, so the
+    // output net is still physically routed through the CMT PIPs under study.
+    (* keep = "true" *) wire [{nclkin}:0] clkin_buf = 0;
     '''.format(nclkin=max_clk_inputs - 1))
 
     pip_list = PipList()
@@ -376,7 +384,7 @@ module top(
                 (* KEEP, DONT_TOUCH *)
                 LUT6 # (.INIT(64'h5555555555555555))
                 clkin{idx}_logic_{site} (
-                    .I0(clkin{idx2}),
+                    .I0(clkin_buf[{idx2}]),
                     .O(clkin{idx}_{site})
                 );
                 """.format(idx=clkin + 1, idx2=clkin_idx, site=site))

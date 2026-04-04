@@ -275,7 +275,17 @@ def use_direct_and_iddr(p, luts, connects):
         p['INIT_Q1'] = random.randint(0, 1)
         p['INIT_Q2'] = random.randint(0, 1)
         p['IS_C_INVERTED'] = random.randint(0, 1)
-        p['IS_D_INVERTED'] = random.randint(0, 1)
+        # Claude Code Analysis
+        # Vivado 2019.1 implements IDDR IS_D_INVERTED=1 via a DINV routing mux
+        # rather than the ZINV_D config bit used in 2017.2.  The routing mux bit
+        # occupies the same bitstream position as the ZINV_D config bit, causing
+        # PDRC-158 ("ILOGICE2.DINV routing mux contention") and making the ZINV_D
+        # bit non-uniquely correlated with IS_D_INVERTED.  ISERDESE2 is unaffected
+        # (it still uses the ZINV_D config bit), so forcing IS_D_INVERTED=0 for
+        # IDDR cells preserves the ZINV_D fuzz coverage via ISERDESE2 sites while
+        # eliminating the spurious bit-setting that breaks the segmatch solver.
+        # Without this, the fuzzer can pass, but ZINV_D bit cannot be correctly discovered
+        p['IS_D_INVERTED'] = 0
         p['SRTYPE'] = verilog.quote(random.choice(('SYNC', 'ASYNC')))
         p['DDR_CLK_EDGE'] = verilog.quote(
             random.choice(

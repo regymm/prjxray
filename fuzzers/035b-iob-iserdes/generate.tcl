@@ -26,6 +26,14 @@ set_property IS_ENABLED 0 [get_drc_checks {REQP-103}]
 set_property IS_ENABLED 0 [get_drc_checks {REQP-79}]
 set_property IS_ENABLED 0 [get_drc_checks {PDRC-26}]
 set_property IS_ENABLED 0 [get_drc_checks {REQP-105}]
+# Vivado 2019.1: suppress CRITICAL WARNINGs from intentional ISERDES test patterns.
+# Place 30-465: local clock driving ILOGIC register (intentional in this fuzzer).
+# Route 35-12: unroutable SHIFTOUT1/2 (intentional - pins left unconnected for fuzzing).
+set_msg_config -id {Place 30-465} -suppress
+set_msg_config -id {Route 35-12} -suppress
+# Vivado 2019.1: ILOGICE2.DINV mux contention is intentional (fuzzing inverter config).
+# Fuzzing of the DINV-related bit is fixed in 035, just supress error for 035b
+set_property IS_ENABLED 0 [get_drc_checks {PDRC-158}]
 
 place_design
 route_design

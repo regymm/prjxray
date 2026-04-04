@@ -96,6 +96,9 @@ proc run {} {
     set_property IS_ENABLED 0 [get_drc_checks {REQP-79}]
     set_property IS_ENABLED 0 [get_drc_checks {REQP-105}]
     set_property IS_ENABLED 0 [get_drc_checks {PDRC-26}]
+    # Vivado 2019.1: ILOGICE2.DINV routing mux contention is intentional (fuzzing DINV config).
+    # may already unneeded as DINV solved in top.py
+    # set_property IS_ENABLED 0 [get_drc_checks {PDRC-158}]
 
     write_checkpoint -force design_pre_place.dcp
 
