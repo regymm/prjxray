@@ -134,8 +134,21 @@ proc dump {} {
     }
 
     set other_site_types [list ISERDESE2 OSERDESE2]
+    # Map from cell reference type to physical site type (7-series).
+    # Vivado 2019.1+ won't auto-place floating OSERDES/ISERDES cells,
+    # so we pre-place at a compatible site before calling place_design.
+    # Try site types for both IOB33 (OLOGICE3/ILOGICE3) and IOB18 (OLOGICE2/ILOGICE2) banks.
+    array set cell_to_site_types {OSERDESE2 {OLOGICE3 OLOGICE2} ISERDESE2 {ILOGICE3 ILOGICE2}}
     foreach site_type $other_site_types {
         set cell [create_cell -reference $site_type test]
+        set compat_site ""
+        foreach st $cell_to_site_types($site_type) {
+            set compat_site [lindex [get_sites -filter "SITE_TYPE == $st"] 0]
+            if {$compat_site ne ""} break
+        }
+        if {$compat_site ne ""} {
+            place_cell $cell $compat_site
+        }
         place_design
         set tile [get_tiles -of [get_sites -of $cell]]
         dump_tile_timings $tile $timing_fp $property_fp $pins_fp $tile_pins_fp
