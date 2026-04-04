@@ -92,11 +92,11 @@ module clb_N5FFMUX (input clk, input [7:0] din, output [7:0] dout);
         end
     end
 
-    (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
+    (* BEL="F8MUX", KEEP, DONT_TOUCH *)
     MUXF8 mux8 (.O(), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
-    (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
+    (* BEL="F7BMUX", KEEP, DONT_TOUCH *)
     MUXF7 mux7b (.O(lut7bo), .I0(lutdo), .I1(lutco), .S(din[6]));
-    (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
+    (* BEL="F7AMUX", KEEP, DONT_TOUCH *)
     MUXF7 mux7a (.O(lut7ao), .I0(lutbo), .I1(lutao), .S(din[6]));
 
 	(* LOC=LOC, BEL="D6LUT", KEEP, DONT_TOUCH *)

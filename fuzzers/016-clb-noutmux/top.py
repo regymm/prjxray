@@ -110,12 +110,13 @@ module myLUT8 (input clk, input [7:0] din,
     assign bo5 = lutno5[N];
 
     //Outputs does not have to be used, will stay without it
-    (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
-    MUXF8 mux8 (.O(lut8o), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
-    (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
-    MUXF7 mux7b (.O(lut7bo), .I0(lutno6[3]), .I1(lutno6[2]), .S(din[6]));
-    (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
-    MUXF7 mux7a (.O(lut7ao), .I0(lutno6[1]), .I1(lutno6[0]), .S(din[6]));
+    // Vivado 2019.1 skip, direct instantiation of MUXF7/8 w/o LUT6_2 at related fuzzers
+    // (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
+    // MUXF8 mux8 (.O(lut8o), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
+    // (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
+    // MUXF7 mux7b (.O(lut7bo), .I0(lutno6[3]), .I1(lutno6[2]), .S(din[6]));
+    // (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
+    // MUXF7 mux7a (.O(lut7ao), .I0(lutno6[1]), .I1(lutno6[0]), .S(din[6]));
 
 	(* LOC=LOC, BEL="D6LUT", KEEP, DONT_TOUCH *)
 	LUT6_2 #(
@@ -251,6 +252,7 @@ module clb_NOUTMUX_F78 (input clk, input [7:0] din, output [7:0] dout);
     parameter LOC="SLICE_FIXME";
     parameter N=1;
     wire lut8o, lut7bo, lut7ao;
+    wire [3:0] lutno6;
     /*
     D: N/A (no such mux position)
     C: F7B:O
@@ -270,12 +272,42 @@ module clb_NOUTMUX_F78 (input clk, input [7:0] din, output [7:0] dout);
         end
     endgenerate
 
-    myLUT8 #(.LOC(LOC), .N(N))
-            myLUT8(.clk(clk), .din(din),
-            .lut8o(lut8o), .lut7bo(lut7bo), .lut7ao(lut7ao),
-            .caro(), .carco(),
-            .bo5(), .bo6(),
-            .ff_q());
+//    myLUT8 #(.LOC(LOC), .N(N))
+//            myLUT8(.clk(clk), .din(din),
+//            .lut8o(lut8o), .lut7bo(lut7bo), .lut7ao(lut7ao),
+//            .caro(), .carco(),
+//            .bo5(), .bo6(),
+//            .ff_q());
+    (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
+    MUXF8 mux8 (.O(lut8o), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
+    (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
+    MUXF7 mux7b (.O(lut7bo), .I0(lutno6[3]), .I1(lutno6[2]), .S(din[6]));
+    (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
+    MUXF7 mux7a (.O(lut7ao), .I0(lutno6[1]), .I1(lutno6[0]), .S(din[6]));
+
+	(* LOC=LOC, BEL="D6LUT", KEEP, DONT_TOUCH *)
+	LUT6 #(.INIT(64'h8000_DEAD_0000_0001)) lutd (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[3]));
+
+	(* LOC=LOC, BEL="C6LUT", KEEP, DONT_TOUCH *)
+    LUT6 #( .INIT(64'h8000_BEEF_0000_0001)) lutc (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[2]));
+
+	(* LOC=LOC, BEL="B6LUT", KEEP, DONT_TOUCH *)
+	LUT6 #(.INIT(64'h8000_CAFE_0000_0001)) lutb (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[1]));
+
+    (* LOC=LOC, BEL="A6LUT", KEEP, DONT_TOUCH *)
+    LUT6 #(.INIT(64'h8000_1CE0_0000_0001)) luta (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[0]));
 endmodule
 
 module clb_NOUTMUX_O5 (input clk, input [7:0] din, output [7:0] dout);

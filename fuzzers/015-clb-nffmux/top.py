@@ -106,12 +106,13 @@ module myLUT8 (input clk, input [7:0] din,
     assign bo6 = lutno6[N];
 
     //Outputs does not have to be used, will stay without it
-    (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
-    MUXF8 mux8 (.O(lut8o), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
-    (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
-    MUXF7 mux7b (.O(lut7bo), .I0(lutno6[3]), .I1(lutno6[2]), .S(din[6]));
-    (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
-    MUXF7 mux7a (.O(lut7ao), .I0(lutno6[1]), .I1(lutno6[0]), .S(din[6]));
+    // Vivado 2019.1 skip, direct instantiation of MUXF7/8 w/o LUT6_2 at related fuzzers
+    // (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
+    // MUXF8 mux8 (.O(lut8o), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
+    // (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
+    // MUXF7 mux7b (.O(lut7bo), .I0(lutno6[3]), .I1(lutno6[2]), .S(din[6]));
+    // (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
+    // MUXF7 mux7a (.O(lut7ao), .I0(lutno6[1]), .I1(lutno6[0]), .S(din[6]));
 
     (* LOC=LOC, BEL="D6LUT", KEEP, DONT_TOUCH *)
     LUT6_2 #(
@@ -282,6 +283,8 @@ module clb_NFFMUX_F78 (input clk, input [7:0] din, output [7:0] dout);
     A: F7A:O
     */
     wire ff_d;
+    wire ff_q = dout[0];
+    wire [3:0]lutno6;
 
     generate
         if (N == 3) begin
@@ -296,13 +299,82 @@ module clb_NFFMUX_F78 (input clk, input [7:0] din, output [7:0] dout);
         end
     endgenerate
 
-    myLUT8 #(.LOC(LOC), .N(N))
-            myLUT8(.clk(clk), .din(din),
-            .lut8o(lut8o), .lut7bo(lut7bo), .lut7ao(lut7ao),
-            .caro(), .carco(),
-            .bo5(), .bo6(),
-            .ff_q(dout[0]),
-            .ff_d(ff_d));
+//    myLUT8 #(.LOC(LOC), .N(N))
+//            myLUT8(.clk(clk), .din(din),
+//            .lut8o(lut8o), .lut7bo(lut7bo), .lut7ao(lut7ao),
+//            .caro(), .carco(),
+//            .bo5(), .bo6(),
+//            .ff_q(dout[0]),
+//            .ff_d(ff_d));
+    (* LOC=LOC, BEL="F8MUX", KEEP, DONT_TOUCH *)
+    MUXF8 mux8 (.O(lut8o), .I0(lut7bo), .I1(lut7ao), .S(din[6]));
+    (* LOC=LOC, BEL="F7BMUX", KEEP, DONT_TOUCH *)
+    MUXF7 mux7b (.O(lut7bo), .I0(lutno6[3]), .I1(lutno6[2]), .S(din[6]));
+    (* LOC=LOC, BEL="F7AMUX", KEEP, DONT_TOUCH *)
+    MUXF7 mux7a (.O(lut7ao), .I0(lutno6[1]), .I1(lutno6[0]), .S(din[6]));
+
+    (* LOC=LOC, BEL="D6LUT", KEEP, DONT_TOUCH *)
+    LUT6 #(.INIT(64'h8000_DEAD_0000_0001)) lutd (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[3]));
+
+    (* LOC=LOC, BEL="C6LUT", KEEP, DONT_TOUCH *)
+    LUT6 #(.INIT(64'h8000_BEEF_0000_0001)) lutc (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[2]));
+
+    (* LOC=LOC, BEL="B6LUT", KEEP, DONT_TOUCH *)
+    LUT6 #(.INIT(64'h8000_CAFE_0000_0001)) lutb (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[1]));
+
+    (* LOC=LOC, BEL="A6LUT", KEEP, DONT_TOUCH *)
+    LUT6 #(.INIT(64'h8000_1CE0_0000_0001)) luta (
+        .I0(din[0]), .I1(din[1]), .I2(din[2]),
+        .I3(din[3]), .I4(din[4]), .I5(din[5]),
+        .O(lutno6[0]));
+
+    generate
+        if (N == 3) begin
+            (* LOC=LOC, BEL="DFF", KEEP, DONT_TOUCH *)
+            FDPE bff (
+                .C(clk),
+                .Q(ff_q),
+                .CE(1'b1),
+                .PRE(1'b0),
+                .D(ff_d));
+        end
+        if (N == 2) begin
+            (* LOC=LOC, BEL="CFF", KEEP, DONT_TOUCH *)
+            FDPE bff (
+                .C(clk),
+                .Q(ff_q),
+                .CE(1'b1),
+                .PRE(1'b0),
+                .D(ff_d));
+        end
+        if (N == 1) begin
+            (* LOC=LOC, BEL="BFF", KEEP, DONT_TOUCH *)
+            FDPE bff (
+                .C(clk),
+                .Q(ff_q),
+                .CE(1'b1),
+                .PRE(1'b0),
+                .D(ff_d));
+        end
+        if (N == 0) begin
+            (* LOC=LOC, BEL="AFF", KEEP, DONT_TOUCH *)
+            FDPE bff (
+                .C(clk),
+                .Q(ff_q),
+                .CE(1'b1),
+                .PRE(1'b0),
+                .D(ff_d));
+        end
+    endgenerate
 endmodule
 
 module clb_NFFMUX_O5 (input clk, input [7:0] din, output [7:0] dout);
