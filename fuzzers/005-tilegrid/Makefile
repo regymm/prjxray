@@ -54,10 +54,12 @@ ifneq (${XRAY_FABRIC}, $(filter ${XRAY_FABRIC}, xc7k480t))
 TILEGRID_TDB_DEPENDENCIES += iob18/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += iob18_int/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += ioi18/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+endif
+TILEGRID_TDB_DEPENDENCIES += pcie/$(BUILD_FOLDER)/segbits_tilegrid.tdb
+TILEGRID_TDB_DEPENDENCIES += pcie_int_interface/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += gtx_common/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += gtx_channel/$(BUILD_FOLDER)/segbits_tilegrid.tdb
 TILEGRID_TDB_DEPENDENCIES += gtx_int_interface/$(BUILD_FOLDER)/segbits_tilegrid.tdb
-endif
 
 # These kintex parts give an empty design
 ifneq (${XRAY_FABRIC}, $(filter ${XRAY_FABRIC}, xc7k160t xc7k325t xc7k480t))

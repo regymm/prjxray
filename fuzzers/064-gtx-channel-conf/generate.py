@@ -111,7 +111,8 @@ def main():
                                     value == param_value)
 
                 for param in ["TXUSRCLK", "TXUSRCLK2", "TXPHDLYTSTCLK",
-                              "RXUSRCLK", "RXUSRCLK2", "DRPCLK"]:
+                              "RXUSRCLK", "RXUSRCLK2", "DRPCLK",
+                              "CPLLLOCKDETCLK", "GTGREFCLK"]:
                     segmk.add_site_tag(site, "INV_" + param, params[param])
 
     gtx_channel_x = [

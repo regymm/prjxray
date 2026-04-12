@@ -192,6 +192,8 @@ $(eval $(call fuzzer,065b-gtp-common-pips,005-tilegrid,part))
 $(eval $(call fuzzer,066-gtp-int-pips,005-tilegrid,all))
 endif
 ifeq ($(XRAY_DATABASE),kintex7)
+$(eval $(call fuzzer,061-pcie-conf,005-tilegrid,all))
+$(eval $(call fuzzer,062-pcie-int-pips,005-tilegrid,all))
 $(eval $(call fuzzer,063-gtx-common-conf,005-tilegrid,part))
 $(eval $(call fuzzer,064-gtx-channel-conf,005-tilegrid,part))
 endif

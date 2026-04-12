@@ -31,6 +31,8 @@ proc run {} {
     set_property IS_ENABLED 0 [get_drc_checks {REQP-51}]
     set_property IS_ENABLED 0 [get_drc_checks {REQP-51}]
     set_property IS_ENABLED 0 [get_drc_checks {REQP-51}]
+    set_property IS_ENABLED 0 [get_drc_checks {REQP-56}]
+    set_property IS_ENABLED 0 [get_drc_checks {REQP-52}]
     set_property IS_ENABLED 0 [get_drc_checks {AVAL-23}]
 
     place_design

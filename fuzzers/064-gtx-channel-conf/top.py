@@ -127,7 +127,8 @@ assign out = in;
 
             verilog_ports = ""
             for param in ["TXUSRCLK", "TXUSRCLK2", "TXPHDLYTSTCLK",
-                          "RXUSRCLK", "RXUSRCLK2", "DRPCLK"]:
+                          "RXUSRCLK", "RXUSRCLK2", "DRPCLK",
+                          "CPLLLOCKDETCLK", "GTGREFCLK"]:
                 is_inverted = random.randint(0, 1)
 
                 params[param] = is_inverted
