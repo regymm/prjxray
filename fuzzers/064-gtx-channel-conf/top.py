@@ -13,6 +13,7 @@ import json
 import os
 import random
 from collections import namedtuple
+import re
 
 random.seed(int(os.getenv("SEED"), 16))
 from prjxray import util
@@ -81,6 +82,9 @@ assign out = in;
 
     primitives_list = list()
 
+    ibufds_gte2_x = set()
+    ibufds_gte2_y = set()
+
     for tile_name, tile_type, site_name, site_type in gen_sites(
             "GTXE2_CHANNEL"):
 
@@ -128,7 +132,7 @@ assign out = in;
             verilog_ports = ""
             for param in ["TXUSRCLK", "TXUSRCLK2", "TXPHDLYTSTCLK",
                           "RXUSRCLK", "RXUSRCLK2", "DRPCLK",
-                          "CPLLLOCKDETCLK", "GTGREFCLK"]:
+                          "CPLLLOCKDETCLK"]: # , "GTGREFCLK"]:
                 is_inverted = random.randint(0, 1)
 
                 params[param] = is_inverted
@@ -137,6 +141,19 @@ assign out = in;
             .IS_{}_INVERTED({}),""".format(param, is_inverted)
                 verilog_ports += """
             .{}({}),""".format(param, luts.get_next_output_net())
+
+            refclk_choice = random.randint(0, 2)
+            verilog_ports += """
+            .GTREFCLK0({}),""".format("sys_clk_0" if refclk_choice == 0 else "1'b0")
+            verilog_ports += """
+            .GTREFCLK1({}),""".format("sys_clk_1" if refclk_choice == 1 else "1'b0")
+            # verilog_ports += """
+            # .GTGREFCLK({}),""".format(luts.get_next_output_net() if refclk_choice == 2 else "1'b0")
+            params['GTREFCLK0_USED'] = refclk_choice == 0
+            params['GTREFCLK1_USED'] = refclk_choice == 1
+            # params['GTGREFCLK_USED'] = refclk_choice == 2
+            # GTGREFCLK usage (feed ordinary logic to GTX refclk) is not recommended, and causes 
+            # problem with GTREFCLK0/GTREFCLK1 usage bits
 
             verilog_attr = verilog_attr.rstrip(",")
             verilog_attr += "\n)"
@@ -151,9 +168,25 @@ assign out = in;
                     site=tile_type.lower(),
                     ports=verilog_ports.rstrip(",")))
 
+        # derive IBUFDS_GTE2 site names from GTXE2_CHANNEL site names
+        site_x, site_y = re.findall(r'X(\d+)Y(\d+)', site_name)[0]
+        ibufds_gte2_x.add(site_x)
+        ibufds_gte2_y.add(str(int(site_y)>>1))
+
         params_list.append(params)
         params_dict["params"] = params_list
         primitives_list.append(params_dict)
+
+    assert len(ibufds_gte2_x) == 1, "IBUFDS_GTE2 sites X incorrect: " + str(ibufds_gte2_x)
+    assert len(ibufds_gte2_y) == 2, "IBUFDS_GTE2 sites Y incorrect: " + str(ibufds_gte2_y)
+    for idx, y in enumerate(sorted(ibufds_gte2_y)):
+        x = next(iter(ibufds_gte2_x))
+        print("""
+        wire sys_clk_{};
+        (* KEEP, DONT_TOUCH, LOC=\"IBUFDS_GTE2_X{}Y{}\" *)
+        IBUFDS_GTE2 ibufds_gte2_x{}y{} (
+        .O(sys_clk_{}), .ODIV2(), .I(), .CEB(1'b0), .IB()
+        );""".format(idx, x, y, x, y, idx))
 
     for l in luts.create_wires_and_luts():
         print(l)

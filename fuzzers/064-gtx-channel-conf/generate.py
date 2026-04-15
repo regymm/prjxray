@@ -112,8 +112,10 @@ def main():
 
                 for param in ["TXUSRCLK", "TXUSRCLK2", "TXPHDLYTSTCLK",
                               "RXUSRCLK", "RXUSRCLK2", "DRPCLK",
-                              "CPLLLOCKDETCLK", "GTGREFCLK"]:
+                              "CPLLLOCKDETCLK"]:
                     segmk.add_site_tag(site, "INV_" + param, params[param])
+                for param in ["GTREFCLK0_USED", "GTREFCLK1_USED"]: #, "GTGREFCLK_USED"]:
+                    segmk.add_site_tag(site, param, params[param])
 
     gtx_channel_x = [
         "GTX_CHANNEL_0",

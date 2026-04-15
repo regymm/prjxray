@@ -19,6 +19,7 @@ proc run {} {
     set_property IS_ENABLED 0 [get_drc_checks {REQP-48}]
     set_property IS_ENABLED 0 [get_drc_checks {REQP-47}]
     set_property IS_ENABLED 0 [get_drc_checks {REQP-1619}]
+    set_property IS_ENABLED 0 [get_drc_checks {REQP-1837}]
     set_property IS_ENABLED 0 [get_drc_checks {AVAL-17}]
     set_property IS_ENABLED 0 [get_drc_checks {AVAL-18}]
     set_property IS_ENABLED 0 [get_drc_checks {AVAL-19}]
